@@ -2,7 +2,7 @@ const { Schema, model, Types } = require("mongoose");
 const ReactionSchema = new Schema(
   {
     reactionId: {
-      type: Schema.Typesof.ObjectId,
+      type: Schema.Types.ObjectId,
       default: () => new Types.ObjectId(),
     },
     reactionBody: {
@@ -20,12 +20,12 @@ const ReactionSchema = new Schema(
       type: String,
       required: true,
     },
-  },
-//   {
-//     toJSON: {
-//       getters: true,
-//     },
-//   }
+  }
+  //   {
+  //     toJSON: {
+  //       getters: true,
+  //     },
+  //   }
 );
 const ThoughtSchema = new Schema(
   {
@@ -52,7 +52,7 @@ const ThoughtSchema = new Schema(
     },
   }
 );
-UserSchema.virtual("reactionCount").get(function () {
+ThoughtSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
 });
 const Thought = model("Thought", ThoughtSchema);
