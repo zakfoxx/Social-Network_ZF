@@ -1,5 +1,5 @@
 const { response } = require("express");
-const { User } = require("../models");
+const { User, Thought } = require("../models");
 const userController = {
   getAllUsers(req, res) {
     User.find({})
@@ -33,6 +33,31 @@ const userController = {
       .catch((err) => {
         console.log(err);
         res.status(400).json(err);
+      });
+  },
+  updateById({ body, params }, res) {
+    User.findOneAndUpdate({ _id: params.id }, body, { new: true })
+      .populate({
+        path: "thoughts",
+        select: "-__v",
+      })
+      .select("-__v")
+      .then((dbUserData) => res.json(dbUserData))
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json(err);
+      });
+  },
+  deleteUser(req, res) {
+    User.findOneAndDelete({ _id: req.params.id })
+      .then((data) => {
+        return Thought.deleteMany({ _id: { $in: data.thoughts } });
+      })
+      .then(() => {
+        res.json({ message: "user and thoughts deleted" });
+      })
+      .catch((err) => {
+        res.status(500).json(err);
       });
   },
 };
